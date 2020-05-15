@@ -1,23 +1,67 @@
+#include <TinyGPS.h>
 #include <Wire.h>
 #include "i2c.h"
 #include "i2c_BMP280.h"
 #include "TinyGPS++.h"
-#include <DHT.h> 
-#include <TinyGPS.h>
-float lat = 28.5458,lon = 77.1703;
-float flat, flon;
-#define DHTPIN 8 
+#include <DHT.h>
+#define DHTPIN 8
 #define DHTTYPE DHT11
 #define TCAADDR 0x70
 DHT dht(DHTPIN, DHTTYPE);
 int temp,humi,H;
-static const uint32_t GPSBaud = 9600;
-TinyGPS gps;
+float flat,flon;
+float lat = 28.5458,lon = 77.1703;
+ 
 BMP280 bmp280s1;
 BMP280 bmp280s2;
 BMP280 bmp280s3;
 BMP280 bmp280s4;
 int relay= 9;
+ 
+TinyGPS gps;
+
+ 
+void tcaselect(uint8_t i)
+{
+  if (i > 7) return;
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();  
+}
+ 
+void setup()
+{
+ dht.begin();
+ Serial.begin(115200);
+ Serial2.begin(9600);
+ Serial3.begin(9600);
+    pinMode(relay, OUTPUT); //mengatur relay sebagai OUTPUT
+   
+    tcaselect(1);
+    bmp280s1.initialize();
+    bmp280s1.setEnabled(0);
+    bmp280s1.triggerMeasurement();
+    delay(100);
+   
+    tcaselect(0);
+    bmp280s2.initialize();
+    bmp280s2.setEnabled(0);
+    bmp280s2.triggerMeasurement();
+    delay(100);
+   
+    tcaselect(3);
+    bmp280s3.initialize();
+    bmp280s3.setEnabled(0);
+    bmp280s3.triggerMeasurement();
+    delay(100);
+   
+    tcaselect(4);
+    bmp280s4.initialize();
+    bmp280s4.setEnabled(0);
+    bmp280s4.triggerMeasurement();
+    delay(100);
+ delay(500);
+}
 
 void GPS()
 {
@@ -47,49 +91,7 @@ void GPS()
     Serial.println(flon == TinyGPS::GPS_INVALID_F_ANGLE ? 0.0 : flon, 6);
 }
 }
-
-void tcaselect(uint8_t i) 
-{
-  if (i > 7) return;
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
-  Wire.endTransmission();  
-}
-
-void setup()
-{
- dht.begin();
- Serial.begin(115200);
- Serial2.begin(9600);
- Serial3.begin(GPSBaud);
  
-    pinMode(relay, OUTPUT); //mengatur relay sebagai OUTPUT
-    
-    tcaselect(1);
-    bmp280s1.initialize();
-    bmp280s1.setEnabled(0);
-    bmp280s1.triggerMeasurement();
-    delay(100);
-    
-    tcaselect(0);
-    bmp280s2.initialize();
-    bmp280s2.setEnabled(0);
-    bmp280s2.triggerMeasurement();
-    delay(100);
-    
-    tcaselect(3);
-    bmp280s3.initialize();
-    bmp280s3.setEnabled(0);
-    bmp280s3.triggerMeasurement();
-    delay(100);
-    
-    tcaselect(4);
-    bmp280s4.initialize();
-    bmp280s4.setEnabled(0);
-    bmp280s4.triggerMeasurement();
-    delay(100);
- delay(500);
-}
 void loop()
 {
   tcaselect(1);
@@ -109,7 +111,7 @@ void loop()
     Serial.print(temperature);
     Serial.println(" C");
     delay(100);
-
+ 
     tcaselect(0);
     Serial.print("Sensor #2 - ");
     bmp280s2.awaitMeasurement();
@@ -127,7 +129,7 @@ void loop()
     Serial.print(temperature2);
     Serial.println(" C");
     delay(100);
-
+ 
     tcaselect(3);
     Serial.print("Sensor #3 - ");
     bmp280s3.awaitMeasurement();
@@ -145,7 +147,7 @@ void loop()
     Serial.print(temperature3);
     Serial.println(" C");
     delay(100);
-    
+   
     tcaselect(4);
     Serial.print("Sensor #4 - ");
     bmp280s4.awaitMeasurement();
@@ -164,40 +166,44 @@ void loop()
     Serial.println(" C");
     delay(100);
   //////////////////////////////////////dht///////////////////////////////////
-  float humi = dht.readHumidity(); 
+  float humi = dht.readHumidity();
   float temp = dht.readTemperature();
+  GPS();
   Serial.print("H: ");
-  Serial.print(humi); 
+  Serial.print(humi);
   Serial.print("% ");
   Serial.print(" T: ");
-  Serial.print(temp); 
-  Serial.println("C");
-///////////////////////////////////////////////GPS Loop///////////////////////////////
-GPS();
-////////////////////////////////////////////////////////////KIRIM SERIAL////////////////////////////////////////////
-Serial2.print('a');
-Serial2.println(temp);  
-Serial2.print('b');
-Serial2.println(humi);
-Serial2.print('c');
-Serial2.println(temperature);
-Serial2.print('d');
-Serial2.println(temperature2);
-Serial2.print('e');
-Serial2.println(temperature3);
-Serial2.print('f');
-Serial2.println(temperature4);
-Serial2.print('g');
-Serial2.println(pascal);
-Serial2.print('h');
-Serial2.println(pascal2);
-Serial2.print('i');
-Serial2.println(pascal3);
-Serial2.print('j');
-Serial2.println(pascal4);
-Serial2.print('k');
-Serial2.println(flat, 6);
-Serial2.print('l');
-Serial2.println(flon, 6);
- delay(3000);
+  Serial.print(temp);
+  Serial.print("C");
+  Serial.print("Lat: ");
+  Serial.println(flat, 6);
+  Serial.print(" Long: ");
+  Serial.println(flon, 6);
+ 
+  Serial2.print('a');
+  Serial2.println(temp);  
+  Serial2.print('b');
+  Serial2.println(humi);
+  Serial2.print('c');
+  Serial2.println(temperature);
+  Serial2.print('d');
+  Serial2.println(temperature2);
+  Serial2.print('e');
+  Serial2.println(temperature3);
+  Serial2.print('f');
+  Serial2.println(temperature4);
+  Serial2.print('g');
+  Serial2.println(pascal);
+  Serial2.print('h');
+  Serial2.println(pascal2);
+  Serial2.print('i');
+  Serial2.println(pascal3);
+  Serial2.print('j');
+  Serial2.println(pascal4);
+  Serial2.print('k');
+  Serial2.println(flat, 6);
+  Serial2.print('l');
+  Serial2.println(flon, 6);
+ 
+   delay(3000);
 }
