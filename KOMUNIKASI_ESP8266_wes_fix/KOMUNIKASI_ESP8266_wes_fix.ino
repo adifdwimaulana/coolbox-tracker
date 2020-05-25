@@ -73,7 +73,7 @@ void loop()
     temp = atof(tempArr); 
     Serial.print("Temperature = ");
     Serial.print(temp);
-     Firebase.setFloat("roomTemperature", temp);
+     Firebase.setFloat("data/roomTemperature", temp);
     } 
     else if(x == 'b'){
     char data = Serial.readBytesUntil('\n', humiArr, 9); //Read the serial data and store it  
@@ -81,7 +81,7 @@ void loop()
     humi = atof(humiArr);
     Serial.print(" Humidity = ");
     Serial.print(humi); 
-    Firebase.setFloat("roomHumidity", humi);
+    Firebase.setFloat("data/roomHumidity", humi);
     } 
     else if(x == 'c'){
     char data = Serial.readBytesUntil('\n', tempBmpA, 9); //Read the serial data and store it  
@@ -89,7 +89,7 @@ void loop()
     tempA = atof(tempBmpA);
     Serial.print(" Temperature A = ");
     Serial.print(tempA); 
-     Firebase.setFloat("tempA", tempA);
+     Firebase.setFloat("data/tempA", tempA);
     }  
     else if(x == 'd'){
     char data = Serial.readBytesUntil('\n', tempBmpB, 9); //Read the serial data and store it  
@@ -97,7 +97,7 @@ void loop()
     tempB = atof(tempBmpB);
     Serial.print(" Temperature B = ");
     Serial.print(tempB); 
-     Firebase.setFloat("tempB", tempB);
+     Firebase.setFloat("data/tempB", tempB);
     } 
     else if(x == 'e'){
     char data = Serial.readBytesUntil('\n', tempBmpC, 9); //Read the serial data and store it  
@@ -105,7 +105,7 @@ void loop()
     tempC = atof(tempBmpC);
     Serial.print(" Temperature C = ");
     Serial.print(tempC);
-    Firebase.setFloat("tempC", tempC);
+    Firebase.setFloat("data/tempC", tempC);
     } 
     else if(x == 'f'){
     char data = Serial.readBytesUntil('\n', tempBmpD, 9); //Read the serial data and store it  
@@ -113,7 +113,7 @@ void loop()
     tempD = atof(tempBmpD);
     Serial.print(" Temperature D = ");
     Serial.print(tempD); 
-    Firebase.setFloat("tempD", tempD);
+    Firebase.setFloat("data/tempD", tempD);
     } 
     else if(x == 'g'){
     char data = Serial.readBytesUntil('\n', tekananBmpA, 9); //Read the serial data and store it  
@@ -121,7 +121,7 @@ void loop()
     tekananA = atof(tekananBmpA);
     Serial.print(" Tekanan A = ");
     Serial.print(tekananA);
-     Firebase.setFloat("pressA", tekananA); 
+     Firebase.setFloat("data/pressA", tekananA); 
     } 
     else if(x == 'h'){
     char data = Serial.readBytesUntil('\n', tekananBmpB, 9); //Read the serial data and store it  
@@ -129,7 +129,7 @@ void loop()
     tekananB = atof(tekananBmpB);
     Serial.print(" Tekanan B = ");
     Serial.print(tekananB);
-     Firebase.setFloat("pressB", tekananB);
+     Firebase.setFloat("data/pressB", tekananB);
     } 
     else if(x == 'i'){
     char data = Serial.readBytesUntil('\n', tekananBmpC, 9); //Read the serial data and store it  
@@ -137,7 +137,7 @@ void loop()
     tekananC = atof(tekananBmpC);
     Serial.print(" Tekanan C = ");
     Serial.print(tekananC);
-     Firebase.setFloat("pressC", tekananC);
+     Firebase.setFloat("data/pressC", tekananC);
     } 
     else if(x == 'j'){
     char data = Serial.readBytesUntil('\n', tekananBmpD, 9); //Read the serial data and store it  
@@ -145,7 +145,7 @@ void loop()
     tekananD = atof(tekananBmpD);
     Serial.print(" Tekanan D = ");
     Serial.println(tekananD); 
-     Firebase.setFloat("pressD", tekananD);  
+     Firebase.setFloat("data/pressD", tekananD);  
     }
     else if(x == 'k'){
     char data = Serial.readBytesUntil('\n', latitude, 9); //Read the serial data and store it  
@@ -153,7 +153,7 @@ void loop()
     LAT = atof(latitude);
     Serial.print(" LAT = ");
     Serial.println(LAT, 6); 
-    Firebase.setFloat("latitude", LAT);  
+    Firebase.setFloat("location/latitude", LAT);  
     }
     else if(x == 'l'){
     char data = Serial.readBytesUntil('\n', longitude, 9); //Read the serial data and store it  
@@ -161,7 +161,7 @@ void loop()
     LONG = atof(longitude);
     Serial.print(" LONG = ");
     Serial.println(LONG, 6); 
-    Firebase.setFloat("longitude", LONG);  
+    Firebase.setFloat("location/longitude", LONG);  
     }
   }
   if(Firebase.failed()){
